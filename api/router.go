@@ -6,6 +6,6 @@ import (
 )
 
 func SetupRoutes(app *fiber.App) {
-	healthCheckGroup := app.Group("/api/v1")
-	healthCheck.SetupRoutes(healthCheckGroup)
+	apiGroup := app.Group("/api/v1")
+	healthCheck.SetupRoutes(apiGroup)
 }

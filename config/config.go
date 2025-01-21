@@ -8,9 +8,10 @@ import (
 )
 
 type Config struct {
-	MySQL MySQLConfig
-	Mongo MongoConfig
-	Postgres PostgresConfig
+	MySQL         MySQLConfig
+	Mongo         MongoConfig
+	Postgres      PostgresConfig
+	DefaultConfig DefaultConfig
 }
 
 type MySQLConfig struct {
@@ -27,23 +28,25 @@ type MongoConfig struct {
 }
 
 type PostgresConfig struct {
-	User     string
-	Password string
-	Host     string
-	Port     string
-	Database string
+	User            string
+	Password        string
+	Host            string
+	Port            string
+	Database        string
 	MaxConns        int32
 	MinConns        int32
 	MaxConnIdleTime time.Duration
-} 
+}
 
-// LoadConfig loads environment variables into the Config struct
-
+type DefaultConfig struct {
+	Port string
+}
 
 // LoadConfig loads configuration using viper
 func LoadConfig() Config {
-	viper.AutomaticEnv() // Automatically read environment variables     // Override config values with environment variables if available
-	// Set environment variable bindings (explicit if needed)
+	viper.AutomaticEnv() // Automatically read environment variables
+
+	// Bind environment variables
 	viper.BindEnv("mysql.user", "MYSQL_USER")
 	viper.BindEnv("mysql.password", "MYSQL_PASSWORD")
 	viper.BindEnv("mysql.host", "MYSQL_HOST")
@@ -62,10 +65,7 @@ func LoadConfig() Config {
 	viper.BindEnv("postgres.min_conns", "POSTGRES_MIN_CONNS")
 	viper.BindEnv("postgres.max_conn_idle_time", "POSTGRES_MAX_CONN_IDLE_TIME")
 
-	// // Read the configuration file
-	// if err := viper.ReadInConfig(); err != nil {
-	// 	log.Fatalf("Error reading config file: %v", err)
-	// }
+	viper.BindEnv("default_config.port", "PORT") // Ensure correct binding
 
 	// Unmarshal the configuration into the Config struct
 	var config Config
