@@ -19,8 +19,8 @@ func ConnectPostgres(cfg config.PostgresConfig) *pgxpool.Pool {
 	if err != nil {
 		log.Fatalf("Unable to parse PostgreSQL DSN: %v", err)
 	}
-	config.MaxConns = cfg.MaxConns
-	config.MinConns = cfg.MinConns
+	config.MaxConns = int32(cfg.MaxConns)
+	config.MinConns = int32(cfg.MinConns)
 	config.MaxConnIdleTime = cfg.MaxConnIdleTime
 
 	// Create connection pool

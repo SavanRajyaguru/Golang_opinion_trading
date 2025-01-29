@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -31,53 +32,71 @@ type PostgresConfig struct {
 	MaxConnIdleTime time.Duration
 }
 
-type DBconfig struct {
+type DBConfig struct {
 	MySQL    MySQLConfig
 	Mongo    MongoConfig
 	Postgres PostgresConfig
 }
 
-// LoadConfig loads configuration using viper
-func LoadDbConfig() DBconfig {
-	viper.AutomaticEnv() // Automatically read environment variables
+// LoadDbConfig loads database configuration using Viper
+func LoadDbConfig() DBConfig {
+	// Set default values for MySQL
+	viper.SetDefault("MYSQL_USER", "root")
+	viper.SetDefault("MYSQL_PASSWORD", "password")
+	viper.SetDefault("MYSQL_HOST", "localhost")
+	viper.SetDefault("MYSQL_PORT", "3306")
+	viper.SetDefault("MYSQL_DB", "testdb")
+
+	// Set default values for MongoDB
+	viper.SetDefault("MONGO_URI", "mongodb://localhost:27017")
+	viper.SetDefault("MONGO_DB", "testdb")
+
+	// Set default values for PostgreSQL
+	viper.SetDefault("POSTGRES_USER", "postgres")
+	viper.SetDefault("POSTGRES_PASSWORD", "password")
+	viper.SetDefault("POSTGRES_HOST", "localhost")
+	viper.SetDefault("POSTGRES_PORT", "5432")
+	viper.SetDefault("POSTGRES_DB", "testdb")
+	viper.SetDefault("POSTGRES_MAX_CONNS", 10)
+	viper.SetDefault("POSTGRES_MIN_CONNS", 2)
+	viper.SetDefault("POSTGRES_MAX_CONN_IDLE_TIME", "5m")
 
 	// Bind environment variables
-	viper.BindEnv("mysql.user", "MYSQL_USER")
-	viper.BindEnv("mysql.password", "MYSQL_PASSWORD")
-	viper.BindEnv("mysql.host", "MYSQL_HOST")
-	viper.BindEnv("mysql.port", "MYSQL_PORT")
-	viper.BindEnv("mysql.database", "MYSQL_DB")
+	viper.BindEnv("MYSQL_USER")
+	viper.BindEnv("MYSQL_PASSWORD")
+	viper.BindEnv("MYSQL_HOST")
+	viper.BindEnv("MYSQL_PORT")
+	viper.BindEnv("MYSQL_DB")
 
-	viper.BindEnv("mongo.uri", "MONGO_URI")
-	viper.BindEnv("mongo.database", "MONGO_DB")
+	viper.BindEnv("MONGO_URI")
+	viper.BindEnv("MONGO_DB")
 
-	viper.BindEnv("postgres.user", "POSTGRES_USER")
-	viper.BindEnv("postgres.password", "POSTGRES_PASSWORD")
-	viper.BindEnv("postgres.host", "POSTGRES_HOST")
-	viper.BindEnv("postgres.port", "POSTGRES_PORT")
-	viper.BindEnv("postgres.database", "POSTGRES_DB")
-	viper.BindEnv("postgres.max_conns", "POSTGRES_MAX_CONNS")
-	viper.BindEnv("postgres.min_conns", "POSTGRES_MIN_CONNS")
-	viper.BindEnv("postgres.max_conn_idle_time", "POSTGRES_MAX_CONN_IDLE_TIME")
+	viper.BindEnv("POSTGRES_USER")
+	viper.BindEnv("POSTGRES_PASSWORD")
+	viper.BindEnv("POSTGRES_HOST")
+	viper.BindEnv("POSTGRES_PORT")
+	viper.BindEnv("POSTGRES_DB")
+	viper.BindEnv("POSTGRES_MAX_CONNS")
+	viper.BindEnv("POSTGRES_MIN_CONNS")
+	viper.BindEnv("POSTGRES_MAX_CONN_IDLE_TIME")
 
 	// Unmarshal the configuration into the Config struct
-	var DBconfig DBconfig
-	if err := viper.Unmarshal(&DBconfig); err != nil {
-		log.Fatalf("Error unmarshalling DBconfig: %v", err)
+	var dbConfig DBConfig
+	if err := viper.Unmarshal(&dbConfig); err != nil {
+		log.Fatalf("Error unmarshalling DBConfig: %v", err)
 	}
 
 	// Parse duration fields explicitly if needed
-	if maxConnIdleTime := viper.GetString("postgres.max_conn_idle_time"); maxConnIdleTime != "" {
+	if maxConnIdleTime := viper.GetString("POSTGRES_MAX_CONN_IDLE_TIME"); maxConnIdleTime != "" {
 		duration, err := time.ParseDuration(maxConnIdleTime)
 		if err != nil {
-			log.Fatalf("Error parsing max_conn_idle_time: %v", err)
+			log.Fatalf("Error parsing POSTGRES_MAX_CONN_IDLE_TIME: %v", err)
 		}
-		DBconfig.Postgres.MaxConnIdleTime = duration
+		dbConfig.Postgres.MaxConnIdleTime = duration
 	}
-	dbConfig := DBconfig
-	return DBconfig{
-		MySQLConfig: {
 
-		}
-	}
+	// Debug output
+	fmt.Printf("Loaded Database Config: %+v\n", dbConfig)
+
+	return dbConfig
 }
