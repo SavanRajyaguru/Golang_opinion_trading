@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -17,7 +16,7 @@ type MySQLConfig struct {
 }
 
 type MongoConfig struct {
-	URI      string
+	URL      string
 	Database string
 }
 
@@ -42,21 +41,21 @@ type DBConfig struct {
 func LoadDbConfig() DBConfig {
 	// Set default values for MySQL
 	viper.SetDefault("MYSQL_USER", "root")
-	viper.SetDefault("MYSQL_PASSWORD", "password")
-	viper.SetDefault("MYSQL_HOST", "localhost")
+	viper.SetDefault("MYSQL_PASSWORD", "root")
+	viper.SetDefault("MYSQL_HOST", "127.0.0.1")
 	viper.SetDefault("MYSQL_PORT", "3306")
-	viper.SetDefault("MYSQL_DB", "testdb")
+	viper.SetDefault("MYSQL_DB", "test")
 
 	// Set default values for MongoDB
-	viper.SetDefault("MONGO_URI", "mongodb://localhost:27017")
-	viper.SetDefault("MONGO_DB", "testdb")
+	viper.SetDefault("MONGO_URL", "mongodb://localhost:27017")
+	viper.SetDefault("MONGO_DB", "test")
 
 	// Set default values for PostgreSQL
 	viper.SetDefault("POSTGRES_USER", "postgres")
 	viper.SetDefault("POSTGRES_PASSWORD", "password")
 	viper.SetDefault("POSTGRES_HOST", "localhost")
 	viper.SetDefault("POSTGRES_PORT", "5432")
-	viper.SetDefault("POSTGRES_DB", "testdb")
+	viper.SetDefault("POSTGRES_DB", "test")
 	viper.SetDefault("POSTGRES_MAX_CONNS", 10)
 	viper.SetDefault("POSTGRES_MIN_CONNS", 2)
 	viper.SetDefault("POSTGRES_MAX_CONN_IDLE_TIME", "5m")
@@ -68,7 +67,7 @@ func LoadDbConfig() DBConfig {
 	viper.BindEnv("MYSQL_PORT")
 	viper.BindEnv("MYSQL_DB")
 
-	viper.BindEnv("MONGO_URI")
+	viper.BindEnv("MONGO_URL")
 	viper.BindEnv("MONGO_DB")
 
 	viper.BindEnv("POSTGRES_USER")
@@ -94,9 +93,19 @@ func LoadDbConfig() DBConfig {
 		}
 		dbConfig.Postgres.MaxConnIdleTime = duration
 	}
-
+	dbConfig.MySQL = MySQLConfig{
+		User:     viper.GetString("MYSQL_USER"),
+		Password: viper.GetString("MYSQL_PASSWORD"),
+		Host:     viper.GetString("MYSQL_HOST"),
+		Port:     viper.GetString("MYSQL_PORT"),
+		Database: viper.GetString("MYSQL_DB"),
+	}
+	dbConfig.Mongo = MongoConfig{
+		URL:      viper.GetString("MONGO_URL"),
+		Database: viper.GetString("MONGO_DB"),
+	}
 	// Debug output
-	fmt.Printf("Loaded Database Config: %+v\n", dbConfig)
+	// fmt.Printf("Loaded Database Config: %+v\n", dbConfig)
 
 	return dbConfig
 }

@@ -5,21 +5,28 @@ import (
 	"fmt"
 	"log"
 
+	"golang_ot/config"
+
 	_ "github.com/go-sql-driver/mysql" // MySQL driver
-	"github.com/yudiz-savan-rajyaguru/golang-ot/config"
 )
 
-func ConnectMySQL(cnf config.MySQLConfig) *sql.DB {
+func ConnectMySQL(cfg config.MySQLConfig) *sql.DB {
+	// Corrected DSN format
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		cnf.User, cnf.Password, cnf.Host, cnf.Port, cnf.Database,
+		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Database,
 	)
+
+	// Open connection
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
-		log.Fatalf("Failed to load MySQL database: %v", err)
+		log.Fatalf("Failed to open MySQL connection: %v", err)
 	}
-	err = db.Ping()
-	if err != nil {
+
+	// Test the connection
+	if err := db.Ping(); err != nil {
 		log.Fatalf("Failed to ping MySQL: %v", err)
 	}
+
+	log.Println("✅ Successfully connected to MySQL!", cfg.Database)
 	return db
 }

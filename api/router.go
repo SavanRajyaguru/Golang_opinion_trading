@@ -1,8 +1,9 @@
 package api
 
 import (
+	"golang_ot/api/v1/healthCheck"
+
 	"github.com/gofiber/fiber/v2"
-	"github.com/yudiz-savan-rajyaguru/golang-ot/api/v1/healthCheck"
 )
 
 func SetupRoutes(app *fiber.App) {

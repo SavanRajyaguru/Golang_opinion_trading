@@ -1,6 +1,10 @@
 package models
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"golang_ot/lang"
+
+	"github.com/gofiber/fiber/v2"
+)
 
 // Response represents the global response structure
 type Response struct {
@@ -10,10 +14,17 @@ type Response struct {
 }
 
 // Json response is the utility function to return json response
-func JSONResponse(c *fiber.Ctx, statusCode int, jsonStatusCode int, status string, message string, data interface{}) error {
+func JSONResponse(c *fiber.Ctx, statusCode int, jsonStatusCode int, message string, replacements []string, data interface{}) error {
+	landCode := c.Locals("userLanguage").(string)
+	messages := lang.GetMessage(landCode, message)
+
+	// Replace placeholders if needed
+	if len(replacements) > 0 {
+		messages = lang.ReplacePlaceholders(landCode, messages, replacements...)
+	}
 	response := Response{
 		Status:  jsonStatusCode,
-		Message: message,
+		Message: messages,
 		Data:    data,
 	}
 	return c.Status(statusCode).JSON(response)

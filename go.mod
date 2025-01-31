@@ -1,4 +1,4 @@
-module github.com/yudiz-savan-rajyaguru/golang-ot
+module golang_ot
 
 go 1.22.1
 

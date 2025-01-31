@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"log"
 
+	"golang_ot/config"
+
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/yudiz-savan-rajyaguru/golang-ot/config"
 )
 
 func ConnectPostgres(cfg config.PostgresConfig) *pgxpool.Pool {
