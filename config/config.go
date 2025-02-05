@@ -13,7 +13,7 @@ type Config struct {
 }
 
 func LoadConfig() Config {
-	viper.SetConfigFile("../../.env")
+	viper.SetConfigFile(".env")
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Printf("Warning: No .env file found, using system environment variables\n")
 	}
