@@ -25,7 +25,8 @@ func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 	if err != nil {
 		return models.JSONResponse(c, fiber.StatusBadRequest, fiber.StatusBadRequest, "error_with", []string{"cUser"}, err.Error())
 	}
-	return models.JSONResponse(c, fiber.StatusCreated, fiber.StatusCreated, "success", []string{"cUser"}, createdUser)
+	userResponse := mongoModels.ConvertUserToResponse(createdUser)
+	return models.JSONResponse(c, fiber.StatusCreated, fiber.StatusCreated, "success", []string{"cUser"}, userResponse)
 }
 
 func (h *UserHandler) GetUserByID(c *fiber.Ctx) error {
@@ -34,5 +35,6 @@ func (h *UserHandler) GetUserByID(c *fiber.Ctx) error {
 	if err != nil {
 		return models.JSONResponse(c, fiber.StatusNotFound, fiber.StatusNotFound, "not_exist", []string{"cUser"}, err.Error())
 	}
-	return models.JSONResponse(c, fiber.StatusOK, fiber.StatusOK, "success", []string{"cUser"}, user)
+	userResponse := mongoModels.ConvertUserToResponse(user)
+	return models.JSONResponse(c, fiber.StatusOK, fiber.StatusOK, "success", []string{"cUser"}, userResponse)
 }

@@ -16,3 +16,23 @@ type User struct {
 	CreatedAt time.Time          `bson:"created_at,omitempty"`
 	UpdatedAt time.Time          `bson:"update_at,omitempty"`
 }
+
+type UserResponse struct {
+	ID        primitive.ObjectID `json:"_id"` // Auto-generated ObjectID
+	Name      string             `json:"name"`
+	Email     string             `json:"email"`
+	Age       int                `json:"age"`
+	CreatedAt time.Time          `json:"created_at"`
+	UpdatedAt time.Time          `json:"update_at"`
+}
+
+func ConvertUserToResponse(user *User) *UserResponse {
+	return &UserResponse{
+		ID:        user.ID,
+		Name:      user.Name,
+		Email:     user.Email,
+		Age:       user.Age,
+		CreatedAt: user.CreatedAt,
+		UpdatedAt: user.UpdatedAt,
+	}
+}
