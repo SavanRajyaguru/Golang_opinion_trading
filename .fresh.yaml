@@ -1,10 +1,10 @@
 version: "1"
 root: .
-main_path: "./cmd/api/"
+main_path: "./cmd/api"
 tmp_path: ./tmp
 build_name: runner-build
-build_args: ""
-run_args: ""
+build_args: "-v"
+run_args: "--port 8080"
 build_log: runner-build-errors.log
 valid_ext: .go, .tpl, .tmpl, .html
 no_rebuild_ext: .tpl, .tmpl, .html
